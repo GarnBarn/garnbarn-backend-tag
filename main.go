@@ -60,7 +60,7 @@ func main() {
 	}))
 
 	// Router
-	router := httpServer.Group("/api/v1")
+	router := httpServer.Group("/api/v1/tag")
 	router.GET("/:id", tagHandler.GetTagById)
 	router.GET("/", tagHandler.GetAllTag)
 	router.POST("/", tagHandler.CreateTag)
