@@ -1,8 +1,6 @@
 package main
 
 import (
-	"context"
-	firebase "firebase.google.com/go"
 	"fmt"
 	"github.com/GarnBarn/common-go/database"
 	"github.com/GarnBarn/common-go/httpserver"
@@ -14,7 +12,6 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/go-playground/validator/v10"
 	"github.com/sirupsen/logrus"
-	"google.golang.org/api/option"
 	"time"
 )
 
@@ -35,19 +32,11 @@ func main() {
 		logrus.Panic("Can't connect to db: ", err)
 	}
 
-	// Initilize the Firebase App
-	opt := option.WithCredentialsFile(appConfig.FIREBASE_CONFIG_FILE)
-	app, err := firebase.NewApp(context.Background(), nil, opt)
-	if err != nil {
-		logrus.Fatalln("error initializing app: %v\n", err)
-	}
-
 	// Create the required dependentices
 	validate := validator.New()
 
 	// Create the repositories
 	tagRepository := repository.NewTagRepository(db)
-	accountRepository := repository.NewAccountRepository(db)
 
 	// Create the services
 	tagService := service.NewTagService(tagRepository)
@@ -72,7 +61,6 @@ func main() {
 
 	// Router
 	router := httpServer.Group("/api/v1/tag")
-	router.Use(handler.Authentication(app, accountRepository))
 	router.GET("/:id", tagHandler.GetTagById)
 	router.GET("/", tagHandler.GetAllTag)
 	router.POST("/", tagHandler.CreateTag)
