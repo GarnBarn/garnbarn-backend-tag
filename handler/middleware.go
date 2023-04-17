@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"fmt"
+	"github.com/GarnBarn/common-go/httpserver"
 	"github.com/GarnBarn/gb-tag-service/repository"
 	"net/http"
 	"strings"
@@ -10,10 +11,6 @@ import (
 	firebase "firebase.google.com/go"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
-)
-
-const (
-	UserUidKey = "userUid"
 )
 
 func Authentication(app *firebase.App, accountRepository repository.AccountRepository) gin.HandlerFunc {
@@ -52,7 +49,7 @@ func Authentication(app *firebase.App, accountRepository repository.AccountRepos
 			}
 		}
 
-		c.AddParam(UserUidKey, account.Uid)
+		c.AddParam(httpserver.UserUidKey, account.Uid)
 		c.Next()
 	}
 }

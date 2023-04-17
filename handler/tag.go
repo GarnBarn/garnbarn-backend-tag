@@ -2,6 +2,7 @@ package handler
 
 import (
 	"errors"
+	"github.com/GarnBarn/common-go/httpserver"
 	"github.com/GarnBarn/gb-tag-service/model"
 	"github.com/GarnBarn/gb-tag-service/service"
 	"net/http"
@@ -31,7 +32,7 @@ func NewTagHandler(validate validator.Validate, tagService service.Tag) Tag {
 
 func (t *Tag) GetAllTag(c *gin.Context) {
 
-	uid := c.Param(UserUidKey)
+	uid := c.Param(httpserver.UserUidKey)
 
 	tags, err := t.tagService.GetAllTag(uid)
 
@@ -72,7 +73,7 @@ func (t *Tag) CreateTag(c *gin.Context) {
 		return
 	}
 
-	tag := tagRequest.ToTag(c.Param(UserUidKey))
+	tag := tagRequest.ToTag(c.Param(httpserver.UserUidKey))
 
 	err = t.tagService.CreateTag(&tag)
 	if err != nil {
