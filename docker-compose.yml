@@ -1,6 +1,6 @@
 version: 3.0.0
 services:
-  db:
+  tag-db:
     image: mysql:8.0.32
     ports:
       - 3306:3306
@@ -14,4 +14,4 @@ services:
     ports:
       - 8080:80
     links:
-      - db
+      - tag-db
