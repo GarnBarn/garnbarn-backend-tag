@@ -43,7 +43,7 @@ func (t *Tag) GetAllTag(c *gin.Context) {
 	tagsPublic := []model.TagPublic{}
 
 	for _, item := range tags {
-		tagsPublic = append(tagsPublic, item.ToTagPublic(true))
+		tagsPublic = append(tagsPublic, model.ToTagPublic(item, true))
 	}
 
 	c.JSON(http.StatusOK, model.BulkResponse[model.TagPublic]{
@@ -81,7 +81,7 @@ func (t *Tag) CreateTag(c *gin.Context) {
 		return
 	}
 
-	tagPublic := tag.ToTagPublic(false)
+	tagPublic := model.ToTagPublic(tag, false)
 	c.JSON(http.StatusOK, tagPublic)
 }
 
@@ -125,7 +125,7 @@ func (t *Tag) UpdateTag(c *gin.Context) {
 		return
 	}
 
-	tagPublic := tag.ToTagPublic(true)
+	tagPublic := model.ToTagPublic(*tag, true)
 	c.JSON(http.StatusOK, tagPublic)
 }
 

@@ -1,6 +1,7 @@
 package service
 
 import (
+	globalmodel "github.com/GarnBarn/common-go/model"
 	"github.com/GarnBarn/gb-tag-service/model"
 	"github.com/GarnBarn/gb-tag-service/repository"
 	"github.com/pquerna/otp/totp"
@@ -12,9 +13,9 @@ type tag struct {
 }
 
 type Tag interface {
-	GetAllTag(author string) ([]model.Tag, error)
-	CreateTag(tag *model.Tag) error
-	UpdateTag(tagId int, tagUpdateRequest *model.UpdateTagRequest) (*model.Tag, error)
+	GetAllTag(author string) ([]globalmodel.Tag, error)
+	CreateTag(tag *globalmodel.Tag) error
+	UpdateTag(tagId int, tagUpdateRequest *model.UpdateTagRequest) (*globalmodel.Tag, error)
 	GetTagById(tagId int) (model.TagPublic, error)
 	DeleteTag(tagId int) error
 	IsTagExist(tagId int) bool
@@ -26,11 +27,11 @@ func NewTagService(tagRepository repository.Tag) Tag {
 	}
 }
 
-func (t *tag) GetAllTag(author string) ([]model.Tag, error) {
+func (t *tag) GetAllTag(author string) ([]globalmodel.Tag, error) {
 	return t.tagRepository.GetAllTag(author)
 }
 
-func (t *tag) CreateTag(tag *model.Tag) error {
+func (t *tag) CreateTag(tag *globalmodel.Tag) error {
 
 	// Create the otp secret
 	totpKeyResult, err := totp.Generate(totp.GenerateOpts{Issuer: "GarnBarn", AccountName: "GarnBarn"})
@@ -46,7 +47,7 @@ func (t *tag) CreateTag(tag *model.Tag) error {
 	return t.tagRepository.Create(tag)
 }
 
-func (t *tag) UpdateTag(tagId int, tagUpdateRequest *model.UpdateTagRequest) (*model.Tag, error) {
+func (t *tag) UpdateTag(tagId int, tagUpdateRequest *model.UpdateTagRequest) (*globalmodel.Tag, error) {
 	// Get current tag
 	tag, err := t.tagRepository.GetByID(tagId)
 	if err != nil {
@@ -69,7 +70,7 @@ func (t *tag) GetTagById(tagId int) (model.TagPublic, error) {
 		return model.TagPublic{}, err
 	}
 
-	return tag.ToTagPublic(true), nil
+	return model.ToTagPublic(*tag, true), nil
 }
 
 func (t *tag) DeleteTag(tagId int) error {

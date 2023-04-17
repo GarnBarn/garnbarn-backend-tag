@@ -3,36 +3,26 @@ package model
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/GarnBarn/common-go/model"
 	"strconv"
 	"strings"
 
 	"github.com/sirupsen/logrus"
-	"gorm.io/gorm"
 )
-
-type Tag struct {
-	gorm.Model
-	Name          string
-	Author        string
-	Color         string
-	ReminderTime  string
-	Subscriber    string
-	SecretKeyTotp string
-}
 
 func convertReminterTimeToString(reminterTime []int) string {
 	reminderTimeByte, _ := json.Marshal(reminterTime)
 	return strings.Trim(string(reminderTimeByte), "[]")
 }
 
-func (t *Tag) ToTagPublic(maskSecretKey bool) TagPublic {
-	reminderTime := strings.Split(t.ReminderTime, ",")
+func ToTagPublic(tag model.Tag, maskSecretKey bool) TagPublic {
+	reminderTime := strings.Split(tag.ReminderTime, ",")
 	reminterTimeInt := []int{}
 
 	for _, item := range reminderTime {
 		result, err := strconv.Atoi(item)
 		if err != nil {
-			logrus.Warn("Can't convert the result to int: ", item, " for ", t.ID)
+			logrus.Warn("Can't convert the result to int: ", item, " for ", tag.ID)
 			continue
 		}
 		reminterTimeInt = append(reminterTimeInt, result)
@@ -40,16 +30,16 @@ func (t *Tag) ToTagPublic(maskSecretKey bool) TagPublic {
 
 	secretKey := ""
 	if !maskSecretKey {
-		secretKey = t.SecretKeyTotp
+		secretKey = tag.SecretKeyTotp
 	}
 
 	return TagPublic{
-		ID:            fmt.Sprint(t.ID),
-		Name:          t.Name,
-		Author:        t.Author,
-		Color:         t.Color,
+		ID:            fmt.Sprint(tag.ID),
+		Name:          tag.Name,
+		Author:        tag.Author,
+		Color:         tag.Color,
 		ReminderTime:  reminterTimeInt,
-		Subscriber:    strings.Split(t.Subscriber, ","),
+		Subscriber:    strings.Split(tag.Subscriber, ","),
 		SecretKeyTotp: secretKey,
 	}
 }
@@ -71,8 +61,8 @@ type CreateTagRequest struct {
 	Subscriber   []string `json:"subscriber"`
 }
 
-func (ct *CreateTagRequest) ToTag(author string) Tag {
-	return Tag{
+func (ct *CreateTagRequest) ToTag(author string) model.Tag {
+	return model.Tag{
 		Name:         ct.Name,
 		Author:       author,
 		Color:        ct.Color,
@@ -88,7 +78,7 @@ type UpdateTagRequest struct {
 	Subscriber   *[]string `json:"subscribe"`
 }
 
-func (utr *UpdateTagRequest) UpdateTag(tag *Tag) {
+func (utr *UpdateTagRequest) UpdateTag(tag *model.Tag) {
 	if utr.Name != nil {
 		tag.Name = *utr.Name
 	}

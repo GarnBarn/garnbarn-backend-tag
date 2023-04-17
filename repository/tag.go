@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"github.com/GarnBarn/gb-tag-service/model"
+	"github.com/GarnBarn/common-go/model"
 	"gorm.io/gorm"
 )
 
