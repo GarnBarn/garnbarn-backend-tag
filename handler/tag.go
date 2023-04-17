@@ -141,7 +141,7 @@ func (t *Tag) GetTagById(c *gin.Context) {
 		return
 	}
 
-	publicTag, err := t.tagService.GetTagById(tagId)
+	publicTag, err := t.tagService.GetTagById(tagId, true)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		c.JSON(http.StatusNotFound, gin.H{"message": "tag id not found"})
 		return

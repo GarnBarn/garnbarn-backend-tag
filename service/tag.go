@@ -16,7 +16,7 @@ type Tag interface {
 	GetAllTag(author string) ([]globalmodel.Tag, error)
 	CreateTag(tag *globalmodel.Tag) error
 	UpdateTag(tagId int, tagUpdateRequest *model.UpdateTagRequest) (*globalmodel.Tag, error)
-	GetTagById(tagId int) (model.TagPublic, error)
+	GetTagById(tagId int, maskSecretKey bool) (model.TagPublic, error)
 	DeleteTag(tagId int) error
 	IsTagExist(tagId int) bool
 }
@@ -63,14 +63,14 @@ func (t *tag) UpdateTag(tagId int, tagUpdateRequest *model.UpdateTagRequest) (*g
 	return tag, err
 }
 
-func (t *tag) GetTagById(tagId int) (model.TagPublic, error) {
+func (t *tag) GetTagById(tagId int, maskSecretKey bool) (model.TagPublic, error) {
 	tag, err := t.tagRepository.GetByID(tagId)
 	if err != nil {
 		logrus.Error(err)
 		return model.TagPublic{}, err
 	}
 
-	return model.ToTagPublic(*tag, true), nil
+	return model.ToTagPublic(*tag, maskSecretKey), nil
 }
 
 func (t *tag) DeleteTag(tagId int) error {
@@ -81,7 +81,7 @@ func (t *tag) DeleteTag(tagId int) error {
 }
 
 func (t *tag) IsTagExist(tagId int) bool {
-	_, err := t.GetTagById(tagId)
+	_, err := t.GetTagById(tagId, true)
 	if err != nil {
 		logrus.Warn(err)
 	}

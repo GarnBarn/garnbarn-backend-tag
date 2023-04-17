@@ -13,6 +13,7 @@ type Config struct {
 	GIN_MODE                string `envconfig:"GIN_MODE" default:"release"`
 	MYSQL_CONNECTION_STRING string `envconfig:"MYSQL_CONNECTION_STRING"`
 	FIREBASE_CONFIG_FILE    string `envconfig:"FIREBASE_CONFIG_FILE" default:"firebase-credential.json"`
+	GRPC_SERVER_PORT        string `envconfig:"GRPC_SERVER_PORT" default:"5002"`
 }
 
 func Load() Config {

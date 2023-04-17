@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/GarnBarn/common-go/model"
+	"github.com/GarnBarn/common-go/proto"
 	"strconv"
 	"strings"
 
@@ -52,6 +53,23 @@ type TagPublic struct {
 	ReminderTime  []int    `json:"reminderTime"`
 	Subscriber    []string `json:"subscriber"`
 	SecretKeyTotp string   `json:"secretKeyTotp,omitempty"`
+}
+
+func (tp *TagPublic) ToProtoTag() proto.TagPublic {
+	var reminderTimes []int32
+	for _, time := range tp.ReminderTime {
+		reminderTimes = append(reminderTimes, int32(time))
+	}
+
+	return proto.TagPublic{
+		Id:            tp.ID,
+		Name:          tp.Name,
+		Author:        tp.Author,
+		Color:         tp.Color,
+		ReminderTime:  reminderTimes,
+		Subscriber:    tp.Subscriber,
+		SecretKeyTotp: tp.SecretKeyTotp,
+	}
 }
 
 type CreateTagRequest struct {
